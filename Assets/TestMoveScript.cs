@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class TestMoveScript : MonoBehaviour {
 
-    public Transform target;
+    
     private Vector3 touchStartPos;
     private Vector3 touchEndPos;
-    private float directionX;
-    private float directionY;
-    private Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
+    private Vector3 touchStartworldPos;
+    private Vector3 touchEndworldPos;
+    private Vector3 clickMoveDistance;
+    private Vector3 objectMoveDistance;
     private Vector3 inititalPos;
-    private const float MOVE_SPEED_PER_SECOND = 8.0f;
-    private Vector3 discDes = new Vector3(0.0f, 0.0f, 0.0f);
-    Camera cam;
-    //Vector3 viewPortPos = gameObject.main.WorldToViewPortPoint(TestDisc);
 
+    private const float MOVE_SPEED_PER_SECOND = 2.0f;
+
+    // further feather: object slow down before stop
+     
+    
     // Use this for initialization
     void Start()
     {
         inititalPos = transform.position;
-        cam = GetComponent<Camera>();
+        Debug.Log("inititalPos is " + inititalPos);
+
     }
 
     // Update is called once per frame
@@ -28,26 +31,45 @@ public class TestMoveScript : MonoBehaviour {
     {
         Flick();
 
-        if(this.gameObject.transform.position.y <= directionY /15 || this.gameObject.transform.position.x >= directionX / 30)
+        /* Objective: Game object move ths same distance and direction as clickMoveDistance
+         * Question1: the object will stop depends on objectMoveDistance.y, it cannot go to -y direction.
+         * Question2: I do not think this is a good condition to trigger gameObject to move, It should be like:
+         if(something = true){ gameObject move to the same distance as [clickMoveDistance]}
+         but how can it stop?
+        
+        further feather: object slow down before stop
+        further feather: setup gameOjbect move distance =  clickMoveDistance * 2.5
+        */
+
+        if (this.gameObject.transform.position.y <= objectMoveDistance.y)
         {
-            this.gameObject.transform.Translate(moveDir * (MOVE_SPEED_PER_SECOND * Time.deltaTime));
+            //Object moving direction same as clicking, should be fine to remain
+            this.gameObject.transform.Translate(clickMoveDistance * (MOVE_SPEED_PER_SECOND * Time.deltaTime));
+            
         }
+
+        //Question: Right Click to restart position, but it will keep going after Right Click
+        Restart();
+
         
     }
 
     //Moving direction
     void Flick()
     {
+        
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            
 
             touchStartPos = new Vector3(Input.mousePosition.x,
                                         Input.mousePosition.y,
                                         Input.mousePosition.z);
+                        
+            touchStartworldPos = Camera.main.ScreenToWorldPoint(touchStartPos);
+            Debug.Log("touchStarworldPos is" + touchStartworldPos);
 
-            Debug.Log(touchStartPos);
-            moveDir = Vector3.zero;
-            transform.position = inititalPos;
+            
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -56,34 +78,37 @@ public class TestMoveScript : MonoBehaviour {
             touchEndPos = new Vector3(Input.mousePosition.x,
                                       Input.mousePosition.y,
                                       Input.mousePosition.z);
+                       
+            touchEndworldPos = Camera.main.ScreenToWorldPoint(touchEndPos);
+            Debug.Log("touchEndworldPos is" + touchEndworldPos);
 
-            Debug.Log(touchEndPos);
+            //object move distance is same as click down to click up distance
+            clickMoveDistance = touchEndworldPos - touchStartworldPos;
+            Debug.Log("clickMoveDistance is" + clickMoveDistance);
 
-            GetDirection();
+            objectMoveDistance = new Vector3(this.gameObject.transform.position.x + clickMoveDistance.x,
+                                             this.gameObject.transform.position.y + clickMoveDistance.y,
+                                             this.gameObject.transform.position.z + clickMoveDistance.z);
+            Debug.Log("objectMoveDistance is" + objectMoveDistance);
 
+
+            
         }
     }
 
-    void GetDirection()
+    void Restart()
     {
-        Debug.Log("inititalPos is" + inititalPos);
-        Vector3 screenPos = cam.WorldToScreenPoint(target.position);
+        //Restart to inititalPos
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            Debug.Log("inititalPos is " + inititalPos);
+            this.gameObject.transform.position = inititalPos;
 
-        Debug.Log("target is " + screenPos.x + " pixels from the left");
-        
-        directionX = touchEndPos.x - inititalPos.x;
-        directionY = touchEndPos.y - inititalPos.y;
-
-        //.normalized用來限制移動半徑為1
-        //Vector3 dir = new Vector3(directionX, directionY, 0.0f).normalized;
-
-        // Move to the same direction as directionX, directionY
-        //this.gameObject.transform.Translate(dir);
-
-        //ベクトルの長さを１にする
-        moveDir = (touchEndPos - touchStartPos).normalized ;
+            //Question: I try to reset position and remain no moving, but it does not work
+            objectMoveDistance = new Vector3(0.0f, 0.0f, 0.0f);
+            this.gameObject.transform.Translate(0.0f, 0.0f, 0.0f);
+        }
 
     }
-
-
+  
 }
