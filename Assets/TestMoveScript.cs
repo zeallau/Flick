@@ -23,7 +23,7 @@ public class TestMoveScript : MonoBehaviour
     void Start()
     {
         inititalPos = transform.position;
-        Debug.Log("inititalPos is " + inititalPos);
+        //Debug.Log("inititalPos is " + inititalPos);
 
     }
 
@@ -75,7 +75,7 @@ public class TestMoveScript : MonoBehaviour
                                         Input.mousePosition.z);
 
             touchStartworldPos = Camera.main.ScreenToWorldPoint(touchStartPos);
-            Debug.Log("touchStarworldPos is" + touchStartworldPos);
+            //Debug.Log("touchStarworldPos is" + touchStartworldPos);
 
 
         }
@@ -88,17 +88,17 @@ public class TestMoveScript : MonoBehaviour
                                       Input.mousePosition.z);
 
             touchEndworldPos = Camera.main.ScreenToWorldPoint(touchEndPos);
-            Debug.Log("touchEndworldPos is" + touchEndworldPos);
+            //Debug.Log("touchEndworldPos is" + touchEndworldPos);
 
             //object move distance is same as click down to click up distance
             clickMoveDistance = (touchEndworldPos - touchStartworldPos);
-            Debug.Log("clickMoveDistance is" + clickMoveDistance.magnitude);
+            //Debug.Log("clickMoveDistance is" + clickMoveDistance.magnitude);
             
 
             objectMoveDistance = new Vector3(this.gameObject.transform.position.x + clickMoveDistance.x,
                                              this.gameObject.transform.position.y + clickMoveDistance.y,
                                              this.gameObject.transform.position.z + clickMoveDistance.z);
-            Debug.Log("objectMoveDistance is" + objectMoveDistance);
+            //Debug.Log("objectMoveDistance is" + objectMoveDistance);
 
             movedDistance = 0.0f; //★追加 移動距離を０に初期化 
 
@@ -110,7 +110,7 @@ public class TestMoveScript : MonoBehaviour
         //Restart to inititalPos
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            Debug.Log("inititalPos is " + inititalPos);
+            //Debug.Log("inititalPos is " + inititalPos);
             this.gameObject.transform.position = inititalPos;
 
             //Question: I try to reset position and remain no moving, but it does not work

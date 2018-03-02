@@ -12,7 +12,7 @@ public class NewDisc : MonoBehaviour {
         //cam = GetComponent<Camera>();
 
         Vector3 screenPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
-        Debug.Log("target is " + screenPos.x + " pixels from the left");
+        //Debug.Log("target is " + screenPos.x + " pixels from the left");
 
         
     }
@@ -32,10 +32,10 @@ public class NewDisc : MonoBehaviour {
                                         Input.mousePosition.y,
                                         Input.mousePosition.z);
 
-            Debug.Log("touchStarPos is" + touchStartPos);
+            //Debug.Log("touchStarPos is" + touchStartPos);
 
             worldPos = Camera.main.ScreenToWorldPoint(touchStartPos);
-            Debug.Log("worldPos is" + worldPos);
+            //Debug.Log("worldPos is" + worldPos);
 
 
             //transform.position = inititalPos;
