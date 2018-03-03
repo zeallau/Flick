@@ -118,6 +118,8 @@ public class TestMoveScript : MonoBehaviour
             this.gameObject.transform.Translate(0.0f, 0.0f, 0.0f);
             //★追加 clickMoveDistanceの長さを０にして、移動させないようにする
             clickMoveDistance = new Vector3(0.0f, 0.0f, 0.0f);
+
+
         }
 
     }
