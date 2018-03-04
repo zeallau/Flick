@@ -19,17 +19,25 @@ public class TargetScript : MonoBehaviour {
 
     bool scoreUp = false;
     bool logUp = false;
+    bool next = false;
+
+    private Vector3 targetSpawnPos;
 
     // Use this for initialization
     void Start () {
         targetPos = this.gameObject.transform.position;
-        disc = GameObject.Find("TestDisc");
+        disc = GameObject.Find("Disc");
 
+        targetSpawnPos = new Vector3(Random.Range(-1.0000f, 1.0000f), Random.Range(0.8000f, 2.3000f), 0.0f);
+        this.gameObject.transform.position = targetSpawnPos;
+        Debug.Log("First Generated targetSpawnPos is " + targetSpawnPos);
+
+        
     }
-	
-	// Update is called once per frame
-	void Update () {
-      
+
+    // Update is called once per frame
+    void Update () {
+        Respawn();
     }
 
     // want to get the stopped value of discToCenter
@@ -38,6 +46,13 @@ public class TargetScript : MonoBehaviour {
         //Distance between Disc and center point of target
         discToCenter = Vector3.Distance(disc.transform.position, targetPos);
 
+        /*how to use Translate to get "Stop"
+        if (disc.transform.Translate.x == 0 && disc.transform.Translate.y == 0)
+        {
+        }
+        */
+
+        
         //To compare currentDTC and lastDTC
         currentDTC = discToCenter;
         
@@ -45,39 +60,48 @@ public class TargetScript : MonoBehaviour {
         {
             finalDTC = discToCenter;
             Debug.Log("finalDTC subposed is" + finalDTC);
-            //Debug.Log("targetRadius in Stay is" + targetRadius);
-            
+                        
             logUp = false;
+            next = true;
         }
 
         lastDTC = currentDTC;
 
-        //finalDTC return 0. tried to set like this.
-        //if (finalDTC != 0 && finalDTC <= scoreYellow && scoreUp == true)
-        if (finalDTC <= scoreYellow && scoreUp == true)
+        //The finalDTC here same as above because of (next == true)            
+        if (next == true)
         {
-            Debug.Log("finalDTC in scoring is "  + finalDTC + " and scoreYellow Distance is " + scoreYellow);
-            Debug.Log("finalDTC in scoring between 0 and scoreYellow " + scoreYellow + ". Get + 100 Score.");
-            scoreUp = false;
-            
-        }else if (finalDTC > scoreYellow && finalDTC <= scoreRed && scoreUp == true)
-        {
-            Debug.Log("finalDTC in scoring  is" + finalDTC + "and scoreRed Distance is " + scoreRed);
-            Debug.Log("finalDTC in scoring between scoreYellow " + scoreYellow + " and scoreRed " + scoreRed + ". Get + 50 Score.");
-            scoreUp = false;
+            if (finalDTC <= scoreYellow && scoreUp == true)
+            {
+                Debug.Log("finalDTC in scoring is " + finalDTC + " and scoreYellow Distance is " + scoreYellow);
+                Debug.Log("finalDTC in scoring between 0 and scoreYellow " + scoreYellow + ". Get + 100 Score.");
+                scoreUp = false;
 
-        }else if (finalDTC > scoreRed && finalDTC <= scoreBlue && scoreUp == true)
-        {
-            Debug.Log("finalDTC in scoring  is" + finalDTC + "and scoreBlue Distance is " + scoreBlue);
-            Debug.Log("finalDTC in scoring between scoreRed " + scoreRed + " and scoreBlue " + scoreBlue + ". Get + 20 Score.");
-            scoreUp = false;
-        }else if (finalDTC > scoreBlue && finalDTC <= targetRadius && scoreUp == true)
-        {
-            Debug.Log("finalDTC in scoring  is" + finalDTC + "and targetRadius Distance is " + targetRadius);
-            Debug.Log("finalDTC in scoring between scoreBlue " + scoreBlue + " and Radius " + targetRadius + ". Get + 0 Score. Missing");
-            scoreUp = false;
+            }
+            else if (finalDTC > scoreYellow && finalDTC <= scoreRed && scoreUp == true)
+            {
+                Debug.Log("finalDTC in scoring  is" + finalDTC + "and scoreRed Distance is " + scoreRed);
+                Debug.Log("finalDTC in scoring between scoreYellow " + scoreYellow + " and scoreRed " + scoreRed + ". Get + 50 Score.");
+                scoreUp = false;
+
+            }
+            else if (finalDTC > scoreRed && finalDTC <= scoreBlue && scoreUp == true)
+            {
+                Debug.Log("finalDTC in scoring  is" + finalDTC + "and scoreBlue Distance is " + scoreBlue);
+                Debug.Log("finalDTC in scoring between scoreRed " + scoreRed + " and scoreBlue " + scoreBlue + ". Get + 20 Score.");
+                scoreUp = false;
+            }
+            else if (finalDTC > scoreBlue && finalDTC <= targetRadius && scoreUp == true)
+            {
+                Debug.Log("finalDTC in scoring  is" + finalDTC + "and targetRadius Distance is " + targetRadius);
+                Debug.Log("finalDTC in scoring between scoreBlue " + scoreBlue + " and Radius " + targetRadius + ". Get + 0 Score. Missing");
+                scoreUp = false;
+            }
         }
 
+        if (next)
+        {
+            next = false;
+        }
     }
     
 
@@ -86,21 +110,27 @@ public class TargetScript : MonoBehaviour {
         //Distance from target center to Radius
         targetRadius = Vector3.Distance(collider.transform.position, targetPos);
         
-        scoreYellow = targetRadius * 0.166f;
+        scoreYellow = targetRadius * 0.2f;
         //Debug.Log("scoreYellow" + scoreYellow);
 
-        scoreRed = targetRadius * 0.463f;
+        scoreRed = targetRadius * 0.5f;
         //Debug.Log("scoreRed" + scoreRed);
 
-        scoreBlue = targetRadius * 0.761f;
+        scoreBlue = targetRadius * 0.8f;
         //Debug.Log("scoreBlue" + scoreBlue);
 
         scoreUp = true;
         logUp = true;
     }
 
-    
+    void Respawn()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            targetSpawnPos = new Vector3(Random.Range(-1.0000f, 1.0000f), Random.Range(0.8000f, 2.3000f), 0.0f);
+            Debug.Log("Respawn Generated targetSpawnPos is " + targetSpawnPos);
 
-
-
+            this.gameObject.transform.position = targetSpawnPos;
+        }
+    }
 }

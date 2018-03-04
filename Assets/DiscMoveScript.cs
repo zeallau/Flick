@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestMoveScript : MonoBehaviour
+public class DiscMoveScript : MonoBehaviour
 {
-    
+
     private Vector3 touchStartPos;
     private Vector3 touchEndPos;
     private Vector3 touchStartworldPos;
     private Vector3 touchEndworldPos;
     private Vector3 clickMoveDistance;
-    private Vector3 objectMoveDistance;
-    private Vector3 inititalPos;
+
+    
     private float movedDistance = 0.0f;//★追加 移動した距離
 
     private const float MOVE_SPEED_PER_SECOND = 2.0f;
@@ -22,9 +22,7 @@ public class TestMoveScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        inititalPos = transform.position;
-        //Debug.Log("inititalPos is " + inititalPos);
-
+   
     }
 
     // Update is called once per frame
@@ -32,18 +30,7 @@ public class TestMoveScript : MonoBehaviour
     {
         Flick();
 
-        /* Objective: Game object move ths same distance and direction as clickMoveDistance
-         * Question1: the object will stop depends on objectMoveDistance.y, it cannot go to -y direction.
-         * Question2: I do not think this is a good condition to trigger gameObject to move, It should be like:
-         if(something = true){ gameObject move to the same distance as [clickMoveDistance]}
-         but how can it stop?
-        
-        further feather: object slow down before stop
-        further feather: setup gameOjbect move distance =  clickMoveDistance * 2.5
-        */
-
-        //if (this.gameObject.transform.position.y <= objectMoveDistance.y) //★削除
-        //{
+      
         if (movedDistance < clickMoveDistance.magnitude)
         { //★追加 移動距離がclickMoveDistanceの長さより短い場合
           //Object moving direction same as clicking, should be fine to remain
@@ -51,10 +38,6 @@ public class TestMoveScript : MonoBehaviour
             this.gameObject.transform.Translate(clickMoveDistance * (MOVE_SPEED_PER_SECOND * Time.deltaTime));
             movedDistance += moveDistance;
         }
-
-
-
-
 
         //Question: Right Click to restart position, but it will keep going after Right Click
         Restart();
@@ -93,13 +76,8 @@ public class TestMoveScript : MonoBehaviour
             //object move distance is same as click down to click up distance
             clickMoveDistance = (touchEndworldPos - touchStartworldPos);
             //Debug.Log("clickMoveDistance is" + clickMoveDistance.magnitude);
+
             
-
-            objectMoveDistance = new Vector3(this.gameObject.transform.position.x + clickMoveDistance.x,
-                                             this.gameObject.transform.position.y + clickMoveDistance.y,
-                                             this.gameObject.transform.position.z + clickMoveDistance.z);
-            //Debug.Log("objectMoveDistance is" + objectMoveDistance);
-
             movedDistance = 0.0f; //★追加 移動距離を０に初期化 
 
         }
@@ -110,11 +88,7 @@ public class TestMoveScript : MonoBehaviour
         //Restart to inititalPos
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            //Debug.Log("inititalPos is " + inititalPos);
-            this.gameObject.transform.position = inititalPos;
-
-            //Question: I try to reset position and remain no moving, but it does not work
-            objectMoveDistance = new Vector3(0.0f, 0.0f, 0.0f);
+            
             this.gameObject.transform.Translate(0.0f, 0.0f, 0.0f);
             //★追加 clickMoveDistanceの長さを０にして、移動させないようにする
             clickMoveDistance = new Vector3(0.0f, 0.0f, 0.0f);
